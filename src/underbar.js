@@ -248,6 +248,18 @@ var _ = { };
   //     bla: "even more stuff"
   //   }); // obj1 now contains key1, key2, key3 and bla
   _.extend = function(obj) {
+    var finalObj = obj;
+
+    // it appears _.each does not work with arguments "array" 
+    var argList = Array.prototype.slice.call(arguments); 
+
+    _.each(argList, function (objArg) {
+      _.each(objArg, function (property, propertyName) {
+        finalObj[propertyName] = property;
+      });
+    });
+
+    return finalObj;
   };
 
   // Like extend, but doesn't ever overwrite a key that already
