@@ -167,15 +167,19 @@ var _ = { };
   //     return total + number;
   //   }, 0); // should be 6
   _.reduce = function(collection, iterator, accumulator) {
-    var total = 0;
-
+    var total;
+    
     if (arguments.length >= 3){
       total = accumulator;
-    }
-
-    _.each(collection, function (item, index, array) {
+      _.each(collection, function (item, index, array) {
       total = iterator(total, item);
-    });
+      });
+    } else {
+      total = collection[0];
+      _.each(collection.slice(1), function (item, index, array) {
+      total = iterator(total, item);
+      });
+    }
 
     return total;
   };
@@ -198,9 +202,7 @@ var _ = { };
     var test = iterator
 
     if (arguments.length < 2){
-      test = function (item) {
-        return item;
-      }
+      test = _.identity
     }
 
     return _.reduce(collection, function(allMatch, item) {
@@ -218,9 +220,7 @@ var _ = { };
     var test = iterator;
 
     if (arguments.length < 2){
-      test = function (item) {
-        return item;
-      }
+      test = _.identity
     }
 
     return !(_.every(collection, !(test)));
