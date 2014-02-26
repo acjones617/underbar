@@ -168,7 +168,7 @@ var _ = { };
   //   }, 0); // should be 6
   _.reduce = function(collection, iterator, accumulator) {
     var total;
-    
+
     if (arguments.length >= 3){
       total = accumulator;
       _.each(collection, function (item, index, array) {
@@ -217,13 +217,15 @@ var _ = { };
   // provided, provide a default one
   _.some = function(collection, iterator) {
     // TIP: There's a very clever way to re-use every() here.
-    var test = iterator;
+    var trueTest = iterator;
 
     if (arguments.length < 2){
-      test = _.identity
+      trueTest = _.identity
     }
 
-    return !(_.every(collection, !(test)));
+    return !(_.every(collection, function() {
+      return !trueTest.apply(this, arguments);
+    }));
   };
 
 
