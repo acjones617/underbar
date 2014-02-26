@@ -250,7 +250,7 @@ var _ = { };
   _.extend = function(obj) {
     var finalObj = obj;
 
-    // it appears _.each does not work with arguments "array" 
+    // it appears _.each does not work with arguments "array"  - fix later?
     var argList = Array.prototype.slice.call(arguments); 
 
     _.each(argList, function (objArg) {
@@ -265,6 +265,19 @@ var _ = { };
   // Like extend, but doesn't ever overwrite a key that already
   // exists in obj
   _.defaults = function(obj) {
+    var finalObj = obj;
+
+    var argList = Array.prototype.slice.call(arguments); 
+
+    _.each(argList, function (objArg) {
+      _.each(objArg, function (property, propertyName) {
+        if (!(propertyName in finalObj)){
+          finalObj[propertyName] = property;
+        }
+      });
+    });
+
+    return finalObj;
   };
 
 
