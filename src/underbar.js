@@ -205,7 +205,7 @@ var _ = { };
       test = _.identity
     }
 
-    return _.reduce(collection, function(allMatch, item) {
+    return _.reduce(collection, function (allMatch, item) {
       if (allMatch && (test(item))) {
         return true;
       }
@@ -223,8 +223,8 @@ var _ = { };
       trueTest = _.identity
     }
 
-    return !(_.every(collection, function() {
-      return !trueTest.apply(this, arguments);
+    return !(_.every(collection, function (item) {
+      return !trueTest(item);
     }));
   };
 
