@@ -95,7 +95,7 @@ var _ = { };
     var unique = [];
 
     _.each(array, function (element) {
-      if (_.indexOf(unique, element) === -1) {
+      if (!(_.contains(unique, element))) {
         unique.push(element);
       }
     });
