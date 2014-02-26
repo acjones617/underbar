@@ -169,7 +169,7 @@ var _ = { };
   _.reduce = function(collection, iterator, accumulator) {
     var total = 0;
 
-    if (accumulator !== undefined){
+    if (arguments.length >= 3){
       total = accumulator;
     }
 
@@ -197,7 +197,7 @@ var _ = { };
   _.every = function(collection, iterator) {
     var test = iterator
 
-    if (iterator === undefined){
+    if (arguments.length < 2){
       test = function (item) {
         return item;
       }
@@ -215,6 +215,15 @@ var _ = { };
   // provided, provide a default one
   _.some = function(collection, iterator) {
     // TIP: There's a very clever way to re-use every() here.
+    var test = iterator;
+
+    if (arguments.length < 2){
+      test = function (item) {
+        return item;
+      }
+    }
+
+    return !(_.every(collection, !(test)));
   };
 
 
