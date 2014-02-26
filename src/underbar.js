@@ -356,6 +356,29 @@ var _ = { };
   // input array. For a tip on how to make a copy of an array, see:
   // http://mdn.io/Array.prototype.slice
   _.shuffle = function(array) {
+    var shufArr = [];
+    var shufObj = {};
+
+    _.each(array, function(item) {
+      shufObj[item] = Math.random();
+    });
+
+    _.each(shufObj, function(propVal, prop) {
+      var placed = false;
+      
+      _.each(shufArr, function(item, index) {
+        if (!placed && propVal < shufObj[item]) {
+          shufArr.splice(index, 0, prop);
+          placed = true;
+        }
+      });
+      
+      if (!placed) {
+        shufArr.push(prop);
+      }        
+    });
+
+    return shufArr;
   };
 
 
