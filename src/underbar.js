@@ -393,6 +393,48 @@ var _ = { };
   // of that string. For example, _.sortBy(people, 'name') should sort
   // an array of people by their name.
   _.sortBy = function(collection, iterator) {
+    var shufArr = [];
+    var interArr1 = [];
+    var interArr2 = [];
+
+    _.each(collection, function(item, index) {
+      if (typeof(iterator) === 'function'){
+        interArr1.push([item, iterator(item)]);
+      }
+      else {
+        interArr1.push([item, item[iterator]]);
+      }
+    });
+    // example sort [undefined, 3, 1, undefined] by itself
+    // after this step, shufObj = {0: undefined, 1: 3, 2: 1, 3: undefined}
+
+    _.each(interArr1, function(interItem, interIndex) {
+      var placed = false;
+      
+      _.each(interArr2, function(item, index) {
+        if (!placed && ((interItem[1] < item[1]) || !(item[1]))) {
+          if (interItem[1]) {
+            interArr2.splice(index, 0, interItem);
+          } else {
+            interArr2.push(interItem);
+          }
+          placed = true;
+        }
+      });
+      
+      if (!placed) {
+        interArr2.push(interItem);
+      }
+    });
+
+      _.each(interArr2, function (item) {
+        shufArr.push(item[0]);
+      })
+
+      // first pass through, shufArr = [undefined]
+      // second pass, shuffArr = []
+
+    return shufArr;
   };
 
   // Zip together two or more arrays with elements of the same index
