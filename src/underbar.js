@@ -492,11 +492,13 @@ var _ = { };
     _.each(firstArr, function (element) {
       var validElement = true;
 
-      _.each(argList.slice(1), function (arr) {
-        if (!(_.contains(arr, element))) {
+      // "break;" doesn't seem to work in an each function, so I wrote out for loop
+      for (var i = 1; i < argList.length; i++) {
+        if (!(_.contains(argList[i], element))) {
           validElement = false;
+          break;
         }
-      });
+      }
 
       if (validElement) {
         intersect.push(element);
