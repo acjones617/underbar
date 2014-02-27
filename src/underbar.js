@@ -405,7 +405,7 @@ var _ = { };
         interArr1.push([item, item[iterator]]);
       }
     });
-
+ 
     _.each(interArr1, function(interItem, interIndex) {
       var placed = false;
       
@@ -546,6 +546,33 @@ var _ = { };
   //
   // See the Underbar readme for details.
   _.throttle = function(func, wait) {
+    var nextScheduled = false;
+    var result;
+    var firstCalled = 0;
+
+    return function() {
+      if (firstCalled === 0) {
+        firstCalled = (new Date()).getTime();
+        result = func.apply(this, arguments);
+      } else if (!nextScheduled) {
+        var thisCall = (new Date()).getTime();
+        var timeDifBetCalls = thisCall - firstCalled;
+
+        if (timeDifBetCalls > wait) {
+          firstCalled = thisCall;
+          result = func.apply(this, arguments);
+        } else {
+          nextScheduled = true;
+          setTimeout(function () {
+            result = func.apply(this, funcArgs);
+            nextScheduled = false;
+            firstCalled = (new Date()).getTime();
+          }, wait - (timeDifBetCalls));
+        }
+      } 
+      
+      return result;
+    };
   };
 
 }).call(this);
