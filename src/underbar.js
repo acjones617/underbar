@@ -552,10 +552,10 @@ var _ = { };
 
     return function() {
       if (firstCalled === 0) {
-        firstCalled = (new Date()).getTime();
+        firstCalled = Date.now();
         result = func.apply(this, arguments);
       } else if (!nextScheduled) {
-        var thisCall = (new Date()).getTime();
+        var thisCall = Date.now();
         var timeDifBetCalls = thisCall - firstCalled;
 
         if (timeDifBetCalls > wait) {
@@ -564,12 +564,14 @@ var _ = { };
         } else {
           nextScheduled = true;
           setTimeout(function () {
-            result = func.apply(this, funcArgs);
+            result = func.apply(this, arguments);
             nextScheduled = false;
-            firstCalled = (new Date()).getTime();
+            firstCalled = Date.now();
           }, wait - (timeDifBetCalls));
         }
-      } 
+      } else {
+
+      }; 
       
       return result;
     };
