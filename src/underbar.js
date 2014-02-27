@@ -469,6 +469,17 @@ var _ = { };
   //
   // Hint: Use Array.isArray to check if something is an array
   _.flatten = function(nestedArray, result) {
+    var flatArr = result ? result : [];
+
+    _.each(nestedArray,  function (element) {
+      if (Array.isArray(element)) {
+        flatArr = _.flatten(element, flatArr);
+      } else {
+        flatArr.push(element);
+      }
+    });
+
+    return flatArr;
   };
 
   // Takes an arbitrary number of arrays and produces an array that contains
