@@ -405,8 +405,6 @@ var _ = { };
         interArr1.push([item, item[iterator]]);
       }
     });
-    // example sort [undefined, 3, 1, undefined] by itself
-    // after this step, shufObj = {0: undefined, 1: 3, 2: 1, 3: undefined}
 
     _.each(interArr1, function(interItem, interIndex) {
       var placed = false;
@@ -430,9 +428,6 @@ var _ = { };
       _.each(interArr2, function (item) {
         shufArr.push(item[0]);
       })
-
-      // first pass through, shufArr = [undefined]
-      // second pass, shuffArr = []
 
     return shufArr;
   };
