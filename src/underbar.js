@@ -513,8 +513,28 @@ var _ = { };
   // Take the difference between one array and a number of other arrays.
   // Only the elements present in just the first array will remain.
   _.difference = function(array) {
-  };
+    var argList = Array.prototype.slice.call(arguments);
+    var diff = [];
+    var firstArr = argList[0];
 
+    _.each(firstArr, function (element) {
+      var validElement = true;
+
+      // "break;" doesn't seem to work in an each function, so I wrote out for loop
+      for (var i = 1; i < argList.length; i++) {
+        if ((_.contains(argList[i], element))) {
+          validElement = false;
+          break;
+        }
+      }
+
+      if (validElement) {
+        diff.push(element);
+      }
+    });  
+    
+    return diff;
+  };
 
   /**
    * MEGA EXTRA CREDIT
