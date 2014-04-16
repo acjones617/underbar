@@ -68,34 +68,26 @@ var _ = { };
 
   // Return all elements of an array that pass a truth test.
   _.filter = function(collection, test) {
-
-    return _.reduce(collection, function(acc, element) {
-      if (test(element)) {
-        acc = acc.concat(element);
-      }
-      return acc;
-    }, []);
-
-    /*
     var filtered = [];
 
-     _.each(collection, function (item) {
+    _.each(collection, function (item) {
       if (test(item)){
         filtered.push(item);
       }
     });
 
     return filtered;
-    */
   };
 
   // Return all elements of an array that don't pass a truth test.
   _.reject = function(collection, test) {
     // TIP: see if you can re-use _.filter() here, without simply
     // copying code in and modifying it
-    return _.filter(collection, function (item) {
+    var rejected = _.filter(collection, function (item) {
       return !test(item);
     });
+
+    return rejected;
   };
 
   // Produce a duplicate-free version of the array.
@@ -175,20 +167,7 @@ var _ = { };
   //     return total + number;
   //   }, 0); // should be 6
   _.reduce = function(collection, iterator, accumulator) {
-    if (accumulator === undefined && Array.isArray(collection)) {
-      var total = collection.slice();
-      accumulator = total.pop();
-    } else {
-      total = collection;
-    }
-
-    _.each(total, function(element) {
-      accumulator = iterator(accumulator, element);
-    });
-
-    return accumulator;
-
-    /*var total;
+    var total;
 
     if (arguments.length >= 3){
       total = accumulator;
@@ -203,7 +182,6 @@ var _ = { };
     }
 
     return total;
-    */
   };
 
   // Determine if the array or object contains a given value (using `===`).
@@ -221,13 +199,14 @@ var _ = { };
 
   // Determine whether all of the elements match a truth test.
   _.every = function(collection, iterator) {
+    var test = iterator
 
     if (arguments.length < 2){
-      iterator = _.identity;
+      test = _.identity
     }
 
     return _.reduce(collection, function (allMatch, item) {
-      if (allMatch && (iterator(item))) {
+      if (allMatch && (test(item))) {
         return true;
       }
       return false;
@@ -238,12 +217,14 @@ var _ = { };
   // provided, provide a default one
   _.some = function(collection, iterator) {
     // TIP: There's a very clever way to re-use every() here.
+    var trueTest = iterator;
+
     if (arguments.length < 2){
-      iterator = _.identity;
+      trueTest = _.identity
     }
 
     return !(_.every(collection, function (item) {
-      return !iterator(item);
+      return !trueTest(item);
     }));
   };
 
@@ -267,19 +248,9 @@ var _ = { };
   //     bla: "even more stuff"
   //   }); // obj1 now contains key1, key2, key3 and bla
   _.extend = function(obj) {
-    var args = Array.prototype.slice.call(arguments, 1);
-
-    return _.reduce(args, function(acc, argObj) {
-      _.each(argObj, function(val, key) {
-        obj[key] = val;
-      });
-      return obj;
-    }, obj);
-
-    /*
     var finalObj = obj;
 
-
+    // it appears _.each does not work with arguments "array"  - fix later?
     var argList = Array.prototype.slice.call(arguments);
 
     _.each(argList, function (objArg) {
@@ -289,25 +260,11 @@ var _ = { };
     });
 
     return finalObj;
-    */
   };
 
   // Like extend, but doesn't ever overwrite a key that already
   // exists in obj
   _.defaults = function(obj) {
-    var args = Array.prototype.slice.call(arguments, 1);
-
-    return _.reduce(args, function(acc, argObj) {
-      _.each(argObj, function(val, key) {
-        if (obj[key] === undefined) {
-          obj[key] = val;
-        }
-      });
-      return obj;
-    }, obj);
-
-
-    /*
     var finalObj = obj;
 
     var argList = Array.prototype.slice.call(arguments);
@@ -321,7 +278,6 @@ var _ = { };
     });
 
     return finalObj;
-    */
   };
 
 
@@ -339,18 +295,6 @@ var _ = { };
     // TIP: These variables are stored in a "closure scope" (worth researching),
     // so that they'll remain available to the newly-generated function every
     // time it's called.
-    var called = false;
-    var result;
-
-    return function() {
-      if (!called) {
-        result = func.apply(this, arguments);
-        called = true;
-      }
-      return result;
-    };
-
-    /*
     var alreadyCalled = false;
     var result;
 
@@ -366,7 +310,6 @@ var _ = { };
       // The new function always returns the originally computed result.
       return result;
     };
-    */
   };
 
   // Memoize an expensive function by storing its results. You may assume
@@ -378,23 +321,12 @@ var _ = { };
   _.memoize = function(func) {
     var argsAndResults = {};
 
-    return function(arg) {
-      if (argsAndResults[arg] === undefined) {
-        argsAndResults[arg] = func.call(this, arg);
-      }
-      return argsAndResults[arg];
-    };
-
-    /*
-    var argsAndResults = {};
-
     return function (arg) {
       if (!(arg in argsAndResults)) {
         argsAndResults[arg] = func(arg);
       }
       return argsAndResults[arg];
     }
-    */
   };
 
   // Delays a function for the given number of milliseconds, and then calls
@@ -404,7 +336,8 @@ var _ = { };
   // parameter. For example _.delay(someFunction, 500, 'a', 'b') will
   // call someFunction('a', 'b') after 500ms
   _.delay = function(func, wait) {
-    var funcArgs = Array.prototype.slice.call(arguments, 2);
+    var allArgs = Array.prototype.slice.call(arguments);
+    var funcArgs = allArgs.slice(2);
 
     setTimeout(function () {
       func.apply(this, funcArgs);
@@ -423,18 +356,6 @@ var _ = { };
   // input array. For a tip on how to make a copy of an array, see:
   // http://mdn.io/Array.prototype.slice
   _.shuffle = function(array) {
-    //Fisher-Yates?
-    var shufArr = array.slice();
-
-    _.each(shufArr, function(element, index) {
-      var randomInd = Math.floor(Math.random()*(index.length - index) + index);
-      shufArr[index] = shufArr[randomInd];
-      shufArr[randomInd] = element;
-    });
-
-    return shufArr;
-
-    /*
     var shufArr = [];
     var shufObj = {};
 
@@ -458,7 +379,6 @@ var _ = { };
     });
 
     return shufArr;
-    */
   };
 
 
@@ -473,22 +393,6 @@ var _ = { };
   // of that string. For example, _.sortBy(people, 'name') should sort
   // an array of people by their name.
   _.sortBy = function(collection, iterator) {
-    if (Array.isArray(collection)) {
-      var sorted = collection.slice();
-    } else {
-      sorted = collection;
-    }
-
-    var isSorted = true;
-/*
-    _.each(sorted, function(element, index) {
-      for (var i = index + 1; i < sorted.length; i++) {
-        if (typeof iterator === 'string') {
-          if(element[iterator] > sorted[i];
-      }
-    }
-*/
-
     var shufArr = [];
     var interArr1 = [];
     var interArr2 = [];
@@ -526,7 +430,6 @@ var _ = { };
       })
 
     return shufArr;
-
   };
 
   // Zip together two or more arrays with elements of the same index
